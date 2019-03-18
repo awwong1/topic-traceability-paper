@@ -60,8 +60,8 @@
 %
 % The "title" command has an optional parameter, allowing the author to define a "short title" to be used in page headers.
 %\title{What are they talking about? Semi-supervised topic modeling for classifying discussion board activity}
-% \title{Tracing Forum Discussions to Source Material using Topic Analysis} % takes up two lines :(
-\title{Tracing forum discussions to source material using topic analysis}
+\title{Tracing Forum Posts to MOOC Content using Topic Analysis} % takes up two lines :(
+% \title{Tracing forum discussions to source material using topic analysis}
 
 %
 % The "author" command and its associated commands are used to define the authors and their affiliations.
@@ -99,29 +99,19 @@
   \postcode{T6G 2S4}
 }
 
-
 %
 % By default, the full list of authors will be used in the page headers. Often, this list is too long, and will overlap
 % other information printed in the page headers. This command allows the author to define a more concise list
 % of authors' names for this purpose.
 % \renewcommand{\shortauthors}{Wong, et al.}
 
-%
 % The abstract is a short summary of the work to be presented in the article.
 \begin{abstract}
 Massive Open Online Courses are educational programs that are open and accessible to a large number of people through the internet.
 To facilitating learning, MOOC discussion forums exist where students and instructors communicate questions, answers, and thoughts related to the course.
-% How can the data from the discussion boards be converted into useful and actionable visualizations of student activity? 
-% Prior work performed summary statistics on user numerical metrics (post frequency, thread participants, active number of threads) and analyzed sentiment of discussion posts (positive/negative). 
-% A visualization of MOOC discussions based on underlying latent topics, utilizing topics mined from course content material and syllabus structure is not yet well explored.
 
-The primary objective of this paper is to investigate tracing discussion forum posts back to course material using topic analysis. %AH: Can you be more specific about the material
-We utilize both unsupervised and supervised variants of Latent Dirichlet Allocation to extract topics from course material and classify forum posts.
-% We compare our approach to the baseline of using Term Frequency - Inverse Document Frequency model.
-% One benefit of our approach is we eliminate the need to manually label discussion forum content, as the extraction of topics from existing course material derives labels from the input corpus.
-% AH: You're de-blinding here. Is it blind or not.
-% AH: University Coursera
-We validate our approach on posts bootstrapped from five University of Alberta Coursera courses and determine that topic models can accurately map student discussions back to the underlying lecture or reading.
+The primary objective of this paper is to investigate tracing discussion forum posts back to course lecture videos and readings using topic analysis. We utilize both unsupervised and supervised variants of Latent Dirichlet Allocation (LDA) to extract topics from course material and classify forum posts.
+We validate our approach on posts bootstrapped from five University of Alberta Coursera courses and determine that topic models can accurately map student discussions back to the underlying lecture or reading. Labeled LDA outperforms unsupervised Hierarchical Dirichlet Process LDA and base LDA for our traceability task.
 
 \end{abstract}
 
@@ -150,22 +140,10 @@ We validate our approach on posts bootstrapped from five University of Alberta C
 \ccsdesc[500]{Applied computing~E-learning}
 \ccsdesc[300]{Software and its engineering~Traceability}
 
-%
 % Keywords. The author(s) should pick words that accurately describe the work being
 % presented. Separate the keywords with commas.
 \keywords{massive open online course (MOOC), latent Dirichlet allocation (LDA), discussion forum, topic analysis, traceability}
 
-%
-% A "teaser" image appears between the author and affiliation information and the body 
-% of the document, and typically spans the page. 
-% \begin{teaserfigure}
-%   \includegraphics[width=\textwidth]{sampleteaser}
-%   \caption{Seattle Mariners at Spring Training, 2010.}
-%   \Description{Enjoying the baseball game from the third-base seats. Ichiro Suzuki preparing to bat.}
-%   \label{fig:teaser}
-% \end{teaserfigure}
-
-%
 % This command processes the author and affiliation and title information and builds
 % the first part of the formatted document.
 \maketitle
@@ -192,8 +170,14 @@ This would allow instructors to more quickly respond to multiple students strugg
 Our approach has the additional benefit that no additional labelling or overhead is required to perform this mapping.
 We restrict ourselves to data that is readily available in the course material and discussion forum.
 
+In this paper, we define a \textit{topic} as similar words that occur in a collection of text documents.
+A topic model like LDA receives a set of input documents, a pre-defined number of topics $n$, and some additional set of prior parameters.
+LDA then attempts to find a set of $n$ topics that describe the input documents.
+A linear combination of all $n$ discovered word distributions can then be mapped to each input document.
+Topics themselves can be thought of as a ranked list of words, ordered from high topic relevance to low topic relevance.
+
 We utilize four different variants of Latent Dirichlet Allocation (LDA) to extract topics from discussion forum content and course material~\cite{blei2003latent}.
-We compare the baseline unsupervised LDA with labeled extensions of LDA.
+We compare the unsupervised LDA with labeled extensions of LDA.
 For labels, we utilize the defined course module, lesson, and item headings already associated with each course document.
 Author~Topic~models train on text with associated authors, enabling association of extracted topics to the individuals that wrote the document~\cite{rosen2004author}.
 Labeled~LDA trains on text with a set of tags, which enables inferring word association to the defined tags that exist within the input corpus~\cite{ramage2009labeled}.
@@ -205,45 +189,21 @@ Our study aims to answer the following research questions:
     \item Do supervised topic models outperform unsupervised topic models in tracing and classifying forum activity? % Compare MRR between supervised & unsupervised LDA models
 \end{enumerate}
 
-\section{Previous Work}
-This paper contributes to research in software engineering traceability and discussion forum topic analysis.
-
-\subsection{Traceability \& Topic Analysis}
-Tracing discussion forum content back to course material has similarities to the problem of tracing source code back the specified requirements.
-Prior work done by \citeauthor{4556122} showed that term frequency-inverse document frequency (TF-IDF) models can encode documents into a rich vector space model, allowing for specification traceability across software artifacts~\cite{4556122}.
-\citeauthor{Tata:2007:EST:1328854.1328855} presented an approach for using TF-IDF models to compare two documents through cosine similarity~\cite{Tata:2007:EST:1328854.1328855}.
-% \citeauthor{895989} outlined a framework for tracing stakeholder requirements through to development processes output, like source code~\cite{895989}.
-
-In this paper, we define a \textit{topic} as a cluster of similar words that occur in a collection of text documents.
-A topic model like LDA receives a set of input documents, a pre-defined number of topics $n$, and some additional set of prior parameters.
-LDA then attempts to find a set of $n$ topics, or $n$ word distributions, that describe the input documents.
-A linear combination of all $n$ discovered topics can then be mapped to each input document.
-Topics themselves can be thought of as a ranked list of words, ordered from high topic relevance to low topic relevance.
-\citeauthor{hindle2012relating}'s research showed that topics extracted from LDA on software requirements documentation can be traced to corresponding version control commits~\cite{hindle2012relating}.
-
-\subsection{Discussion Forum Analysis}
-The analysis of discussion forums in an educational context is a well-studied domain, spanning insight from sentiment analysis, social network interactions, user reputation, content popularity, and forum usage semantics~\cite{wen2014sentiment,wong2015analysis,coetzee2014should,breslow2013studying,onah2014exploring}.
-
-Of prior work utilizing topic analysis, \citeauthor{ezen2015unsupervised} explored an unsupervised approach for clustering MOOC discussion board activity. Their strategy involved using the $k$-medoids clustering algorithm on a bag-of-words inputs derived from discussion forum entities, then applying LDA for topic extraction to evaluate cluster semantics~\cite{ezen2015unsupervised}.
-\citeauthor{atapattu2016topic} used LDA to capture influential topic clusters and isolate discussions requiring intervention on Coursera MOOCs~\cite{atapattu2016topic}.
-\citeauthor{ramesh2014understanding}'s research predicted MOOC student survival using features extracted from seeded topic models on discussion forum posts~\cite{ramesh2014understanding}.
-\citeauthor{Chen:2016:TME:2883851.2883951}'s work performed topic analysis on students' reflection journals, showing exploration of underlying themes and enabling prediction of journal grades~\cite{Chen:2016:TME:2883851.2883951}.
-% \citeauthor{WISE201711}'s research proposed a linguistic natural language model for classifying discussion threads based on the relation to the course content and found reasonable predictive ability~\cite{WISE201711}.
-
 
 \section{Methodology}
-We aim to relate MOOC discussion forum activity to MOOC content by topics extracted from course material.
+We first relate MOOC discussion forum posts to topics extracted from MOOC course content.
 Afterwards, we evaluate if topic mapping vectors are appropriate features to use for discussions and course material traceability.
 
 Our methodology is to extract course material from the Coursera platform and convert the unstructured text into a natural language processing (NLP) ready format.
 Then we perform topic analysis using unsupervised LDA, unsupervised HDP-LDA, supervised Author-Topic models, and Labeled LDA.
-We infer extracted topics across all discussion posts for the given course.
+We perform topic model inference on discussion posts. A post is given weights indicating topic contributions to the post.
 We compare our topic models to our baseline TF-IDF model to determine the utility of topic extraction models to create features from discussion posts and course material.
 Finally, we present our results and analysis.
 
 \subsection{Data Mining Coursera}
 Coursera is an online learning platform that allows universities and other organizations to offer MOOCs, specializations, and degrees.
 A MOOC can be versioned by \texttt{branches} or be composed of a single \texttt{branch}.
+Figure~\ref{fig:data_model} shows the structure of course material within a \texttt{branch}.
 A \texttt{branch} is composed of \texttt{modules}, which are groups of \texttt{lessons} intended to encompass a week's worth of material.
 A \texttt{lesson} is a more focused group containing \texttt{items} on a specific subject matter.
 An \texttt{item} is the smallest document for Coursera MOOCs. \texttt{Items} are used to encapsulate specific lecture videos, readings, quizzes, or assignments.
@@ -251,7 +211,7 @@ An \texttt{item} is the smallest document for Coursera MOOCs. \texttt{Items} are
 Multiple forums may exist for a single course.
 The forums are curated by the instructional staff and exist to tailor discussion to a general domain.
 Common course forum titles include "Introductions", "General Course Discussion", and "Technical Issues".
-When interacting with the forums, students are limited to either posting "Questions" or "Answers".
+When interacting with the forums, students are limited to either posting \texttt{Questions} or \texttt{Answers}.
 Questions are top level discussion entities that exist immediately underneath a forum, usually seeking subject matter clarification and help.
 Answers are replies to Questions and typically contain hints and guidance for the related question.
 In our study, we did not distinguish between the forums a user posted in or the type of discussion.
@@ -259,17 +219,17 @@ In our study, we did not distinguish between the forums a user posted in or the 
 Only the most recent, active branch was evaluated for each course.
 We extracted the hierarchical structure for each course, adding lecture video subtitles and readings to our available corpus.
 Unstructured text from quizzes and assignments were ignored due to limitations arising from converting interactive student experiences into static documents.
-All mined textual data was pre-processed by stripping tags (characters encapsulated by "\texttt{<}", and "\texttt{>}"), punctuation, consecutive white-spaces, numeric digits(\texttt{0} to \texttt{9}), stop words ("this", "and", "the", etc.), and words less than three characters in length.
+All mined textual data was pre-processed by stripping XML tags (characters encapsulated by "\texttt{<}", and "\texttt{>}"), punctuation, consecutive white-spaces, numeric digits(\texttt{0} to \texttt{9}), stop words ("this", "and", "the", etc.), and words less than three characters in length.
 The remaining words were then porter-stemmed to their root form (removal of "-ing", "-s", "-ed", "-ly", etc.).
 
 The hierarchical structure of the course was obtained through privileged access to course material by course administrators.
 The raw document information, such as lecture video subtitles and readings, was mined through polling the Coursera On-Demand API endpoint as an authenticated user enrolled in all of the relevant courses.
 Figure \ref{fig:data_model} shows the scope of our data model for our research.
 
-We performed supervised and unsupervised topic extraction on seven University of Alberta MOOCs run on the Coursera platform, described in Table~\ref{tab:uofa-courses}
+We performed supervised and unsupervised topic extraction on five University of Alberta MOOCs run on the Coursera platform, described in Table~\ref{tab:uofa-courses}.
 All courses studied were related to Computer Science and Software Engineering.
-After pre-processing the course material, we obtained 389 documents, with 16,596 unique tokens. % TODO: no longer accurate
-The average document contained 377 tokens.
+After pre-processing the course material, we obtained 190 documents, with 8,805 unique tokens.
+The average document contained 158 tokens.
 An example of the document structure and label hierarchy can be found in Figure~\ref{fig:sample_doc}.
 
 \begin{table}
@@ -293,14 +253,14 @@ An example of the document structure and label hierarchy can be found in Figure~
 
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/data_model.png}
+    \includegraphics[width=\columnwidth]{fig/data_model}
     \caption{Course material consists of modules, lessons, and items. Topics infer discussion board activity. Topics have a many-to-many relationship to course material.}
     \label{fig:data_model}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/sample_doc.png}
+    \includegraphics[width=\columnwidth]{fig/sample_doc}
     \caption{Two documents (D) from "Agile Planning for Software Products" with corresponding labels (M, L, I).}
     \label{fig:sample_doc}
 \end{figure}
@@ -333,7 +293,7 @@ The differences between the four studied models are defined in Table~\ref{tab:to
 
 \begin{table}
     \centering
-    \begin{tabularx}{\columnwidth}{@{}lccc@{}}
+    \begin{tabularx}{\columnwidth}{@{}llll@{}}
     \toprule
     Topic Model & Labels & Topic Characteristic & Num. Topics \\
     \midrule
@@ -380,25 +340,26 @@ The cosine distance function returns a floating value between 0 and 1. As the co
 % are they in order: cosine distance
 
 To determine the effectiveness of our models in tracing discussion forum text back to the underlying course content, we randomly sampled from the discussion activity and manually assigned the discussion to the underlying course item.
+Posts were queried for manual labelling using \texttt{sqlite} "\texttt{ORDER BY RANDOM()}".
 Only the primary author labeled the discussion posts.
+Discussion posts were assigned a \texttt{module}, \texttt{lesson}, and \texttt{item} name.
 Labelling the discussion posts was challenging as there were many discussions that did not have a clear mapping to one course item.
 Discussion posts that were blatantly off topic were excluded from topic model traceability evaluation, using the researcher's judgment.
 We evaluated our models on 100 manually classified posts for each of the 7 courses.
-% AH: how do you know it's the underlying course item? % addressed
 
 \begin{equation}
     \text{Mean Reciprocal Rank} = \frac{1}{|Q|} \sum^{|Q|}_{i=1}\frac{1}{\text{rank}_i}
     \label{eq:mrr}
 \end{equation}
 
-We evaluated the model provided forum post ordering with our manually labeled discussion data using mean reciprocal rank (MRR), as shown in Equation~\ref{eq:mrr}.
+We evaluated each model-provided forum post ordering with our manually labeled discussion data using mean reciprocal rank (MRR), as shown in Equation~\ref{eq:mrr}.
 Given a sample number of queries $Q$, we return the multiplicative inverse of the rank for the correct answer.
-For example, if the model ranked a discussion question with our value in the first place, the MRR would be $1$.
+For example, if a model ranked a discussion question with our value in the first place, the MRR would be $1$.
 Second and third place would be $\frac{1}{2}$ and $\frac{1}{3}$ respectively.
 
 To evaluate performance we produced test sets (not training sets) by bootstrapping 1000 samples from 100 discussion-material document pairs that we had manually labeled for each of the five courses. 
-The document pairs were randomly sampled for manual labelling using \texttt{sqlite} "ORDER BY RANDOM()" to get the documents.
 We bootstrap in order to provide a better estimate of performance based on limited manual labelling and sampling.
+
 
 % AH: I don't understand how this is qualitative. You're using MRRs...
 % AH: is this some RQ?
@@ -407,49 +368,40 @@ To help answer the first research question, we summarized the underlying themes 
 We looked at the vocabulary intersection of words used by students with words used in the lecture videos and readings.
 Given common words used by students that did not appear in the course material, we used our judgment to explain the recurring off-topic themes that did not map cleanly back to course material.
 
-% \section{Results}
-% \begin{table*}[t] %AH: These aren't boostrapped
-%     \centering
-% \noindent\begin{tabular}{r*{5}{|p{0.2\columnwidth}}|}
-%  \multicolumn{1}{c}{} & \multicolumn{1}{c}{TF-IDF} & \multicolumn{1}{c}{Author-Topic} 
-%   & \multicolumn{1}{c}{LDA} & \multicolumn{1}{c}{HDP-LDA} & \multicolumn{1}{c}{Labeled LDA} \\ \hhline{~*5{|-}|}
-%  Agile Planning for Software Products           & \bf 0.851 & 0.072 & 0.347 & 0.374 & \emph{0.439} \\ \hhline{~*5{|-}|}
-%  Client Needs and Software Requirements         & \bf 0.650 & 0.351 & 0.169 & \emph{0.456} & 0.262 \\ \hhline{~*5{|-}|} 
-%  Design Patterns                                & \bf 0.661 & 0.062 & 0.295 & 0.168 & \emph{0.327} \\ \hhline{~*5{|-}|}
-%  Introduction to Software Product Management    & \emph{0.209} & 0.052 & 0.100 & 0.206 & \bf 0.238 \\ \hhline{~*5{|-}|}
-%  Object Oriented Design                         & \bf 0.925 & 0.094 & \emph{0.462} & 0.272 & 0.436 \\ \hhline{~*5{|-}|} 
-%  \hhline{*6{|-}|}
-%  \textit{All Courses Combined}                  & \bf 0.659 & 0.126 & 0.275 & 0.295 & \emph{0.340} \\ \hhline{~*5{|-}|}
-% \end{tabular}\par\bigskip
-%     \caption{Mean reciprocal ranks for the baseline and four topic models on our five courses. Values closer to 1 are better.}
-%     \label{tab:result_mrrs}
-% \end{table*}
-
 \section{Results}
-\begin{table*}[t] % these are bootstrapped
+\begin{table*}[t]
     \centering
 \noindent\begin{tabular}{r*{5}{|p{0.2\columnwidth}}|}
- \multicolumn{1}{c}{} & \multicolumn{1}{c}{TF-IDF} & \multicolumn{1}{c}{Author-Topic} 
-  & \multicolumn{1}{c}{LDA} & \multicolumn{1}{c}{HDP-LDA} & \multicolumn{1}{c}{Labeled LDA} \\ \hhline{~*5{|-}|}
- Agile Planning for Software Products           & \bf 0.824 & 0.069 & 0.381 & 0.394 & \emph{0.421} \\ \hhline{~*5{|-}|}
- Client Needs and Software Requirements         & \bf 0.667 & 0.378 & 0.150 & \emph{0.470} & 0.264 \\ \hhline{~*5{|-}|} 
- Design Patterns                                & \bf 0.633 & 0.062 & 0.264 & 0.165 & \emph{0.361} \\ \hhline{~*5{|-}|}
- Introduction to Software Product Management    & \emph{0.182} & 0.050 & 0.074 & 0.154 & \bf 0.194 \\ \hhline{~*5{|-}|}
- Object Oriented Design                         & \bf 0.915 & 0.091 & \emph{0.393} & 0.296 & 0.388 \\ \hhline{~*5{|-}|} 
+ \multicolumn{1}{c}{} & \multicolumn{1}{c}{TF-IDF} & \multicolumn{1}{c}{LDA} 
+  & \multicolumn{1}{c}{HDP-LDA} & \multicolumn{1}{c}{Author-Topic} & \multicolumn{1}{c}{Labeled LDA} \\ \hhline{~*5{|-}|}
+ Agile Planning for Software Products           & \bf 0.824 & 0.388 & 0.400 & 0.072 & \emph{0.436} \\ \hhline{~*5{|-}|}
+ Client Needs and Software Requirements         & \bf 0.654 & 0.163 & \emph{0.478} & 0.362 & 0.246 \\ \hhline{~*5{|-}|} 
+ Design Patterns                                & \bf 0.654 & 0.266 & 0.173 & 0.066 & \emph{0.390} \\ \hhline{~*5{|-}|}
+ Introduction to Software Product Management    & \emph{0.187} & 0.077 & 0.172 & 0.050 & \bf 0.217 \\ \hhline{~*5{|-}|}
+ Object Oriented Design                         & \bf 0.927 & 0.400 & 0.292 & 0.087 & \emph{0.432} \\ \hhline{~*5{|-}|} 
  \hhline{*6{|-}|}
- \textit{All Courses Combined}                  & \bf 0.644 & 0.130 & 0.252 & 0.296 & \emph{0.326} \\ \hhline{~*5{|-}|}
+ \textit{All Courses Combined}                  & \bf 0.649 & 0.259 & 0.303 & 0.127 & \emph{0.344} \\ \hhline{~*5{|-}|}
 \end{tabular}\par\bigskip
-    \caption{Mean reciprocal ranks for the baseline and four topic models on our five courses. Values closer to 1 are better.}
+    \caption{Bootstrapped mean reciprocal ranks for the baseline and topic models on our courses. Best values are bolded.}
     \label{tab:result_mrrs}
 \end{table*}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{fig/agile-planning-bootstrap-cropped}
+    \caption{Reciprocal rank violin plot for "Agile Planning for Software Products". Horizontal line indicates model MRR.}
+    \label{fig:agile-planning-plot}
+\end{figure}
 
 % AH: 1 thing about the results, the features used by TF-IDF were in the 1000s
 % AH: the LDA results were at most 150?
 The calculated MRRs derived from our analyzed courses are shown in Table~\ref{tab:result_mrrs}.
 The baseline TF-IDF model outperforms topic models in all courses except for "Introduction to Software Product Management".
 The least effective model for discussion forum traceability was the Author-Topic model, as it had the lowest MRR for four of the five courses.
-A sample violin plot for one of our courses is shown in Figure~\ref{fig:agile-planning-plot}. %AH: this is not enough. Tell us what the plot means 
 
+A sample violin plot for one of our courses is shown in Figure~\ref{fig:agile-planning-plot}. %AH: this is not enough. Tell us what the plot means 
+With the MRR closest to 1, the plot indicates that TF-IDF is the most accurate model for tracing discussion posts back to relevant course material.
+Labeled LDA, HDP-LDA, and base LDA have MRRs around 0.4, meaning that the correct output is frequently ranked as the second or third place in the output.
 
 \subsection{Course Vocabulary Applicability to Forums}
 We looked at the frequently occurring words used by students that were not encompassed within our course vocabulary. Within "Agile Planning for Software Products", these common words included:
@@ -478,7 +430,7 @@ These types of posts were manually labelled as off topic, as no course material 
 
 \subsection{Topic Model Utility in Forum Traceability}
 We compared the MRRs of our models with random chance using the Wilcoxon Rank Sum Test with Continuity Correction.
-Across all of the five courses, our topic models outperform random mapping with a $p\text{-value} < 2.2 * 10^{-16}$.
+Across all of the five courses, our trained topic models outperform random mapping with a $p\text{-value} < 2.2 * 10^{-16}$.
 
 Topic models are less effective than the baseline TF-IDF model, however the correctly labeled output is still consistently within the top three ranks for the LDA, HDP-LDA, and Labelled LDA models. Author-Topic models performed the worst of all models, where the appropriate label was usually ranked ten places lower. % AH: are you making the claim because the MRR is 0.4?
 
@@ -490,53 +442,52 @@ Our result suggests that overall, topic models are a promising candidate for gen
 \textbf{RQ2}: Topic models outperform randomly mapping discussion posts to course material. This suggests that topic models are an effective candidate for traceability analysis.
 \end{tcolorbox}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\columnwidth]{fig/agile-planning-bootstrap.png}
-    \caption{Reciprocal rank violin plot for "Agile Planning for Software Products". Horizontal line indicates model MRR.}
-    \label{fig:agile-planning-plot}
-\end{figure}
-
 \subsection{Supervised vs. Unsupervised Topic Models}
 
-% AH: You didn't bootstrap did you?
-
-To validate the effectiveness of supervised versus unsupervised topic models, we compared the MRRs of the Labeled LDA with the HDP-LDA and LDA models.
+To validate the effectiveness of supervised versus unsupervised topic models, we compared the Labeled LDA MRRs with the LDA and HDP-LDA models.
 We ignored comparison tests using Author-Topic models due to their relatively poor performance.
 
-We compared Labelled LDA with HDP-LDA and Labelled LDA for each course using Wilcoxon Rank Sum Test with Continuity Correction.
+We compared Labelled LDA with base LDA and HDP-LDA for each course using Wilcoxon Rank Sum Test with Continuity Correction.
 All calculated $p$-values are displayed in Table~\ref{tab:sup-unsup-test}.
-% AH: labelled LDA doesn't exist there
-% At $\alpha=0.01$,  we fail to reject the null hypothesis ($W=122790, p\text{-value}=0.6274$).
-% We then compared Labelled LDA with naive LDA using the same statistical test.
-% At $\alpha=0.01$, we reject the null hypothesis here ($W=140480, p\text{-value} = 0.0006689$).
+This table shows that the means for our three models are statistically different from each other.
 
-We do not find consistent results indicating differences between supervised and unsupervised topic models.
-% AH: Really your commented out stuff shows that Labelled LDA > LDA
-Although Labelled LDA outperforms both HDP-LDA and LDA in three courses, only "Introduction to Software Project Management" is statistically significant to LDA.
-HDP-LDA outperforms Labelled LDA in the "Client Needs and Software Requirements" course with statistical significance.
-
-These results suggest that the use of labels for topic model analysis is not important for traceability. Both unsupervised and supervised topic model approaches are comparable in performance for this task.
+Labelled LDA provided statistically significant higher mean reciprocal ranks compared with HDP-LDA and base LDA.
+These results suggest that the use of labels for topic model analysis is important for traceability.
+Although supervised topic models do not always outperform unsupervised approaches, labelled topic models appear to better infer traceability features for student discussion posts.
 
 \begin{tcolorbox}[sharp corners, top=1mm, bottom=1mm]
-\textbf{RQ3}: Supervised topic models do not perform better than unsupervised topic models. Both approaches have statistically comparable effectiveness in topic traceability tasks.
-\end{tcolorbox} % AH: I have real doubts about this.
+\textbf{RQ3}: Properly labeled, supervised topic models perform better than unsupervised topic models in tracing discussion posts back to MOOC content.
+\end{tcolorbox}
+% not bootstrapped
+% \begin{table}
+%     \centering
+%     \begin{tabular}{l*{2}{c}}
+%     \toprule
+%     Coursera Course Name & HDP-LDA & LDA \\
+%     \midrule
+%     Agile Planning for Software Prod. & 0.5176 & 0.2522 \\
+%     Client Needs and Software Reqs. & $\mathbf{3.003*10^{-4}}$ & 0.1196 \\
+%     Design Patterns & 0.3606 & 0.187 \\
+%     Introduction to SPM & 0.06331 & $\mathbf{2.397*10^{-16}}$ \\
+%     Object Oriented Design & 0.04447 & 0.1891 \\
+%     % \textit{All Courses Combined} & 0.6274 & \bf 6.689e-4 \\
+%     \bottomrule
+%     \end{tabular}
+%     \caption{Wilcoxon rank sum test generated $p$-values for Labelled LDA against HDP-LDA and LDA. Bold values reject the null hypothesis ($\alpha=0.01$).}
+%     \label{tab:sup-unsup-test}
+% \end{table}
 
 \begin{table}
     \centering
     \begin{tabular}{l*{2}{c}}
     \toprule
-    Coursera Course Name & HDP-LDA & LDA \\
+    Comparison & W & $p\text{-value}$ \\
     \midrule
-    Agile Planning for Software Prod. & 0.5176 & 0.2522 \\
-    Client Needs and Software Reqs. & $\mathbf{3.003*10^{-4}}$ & 0.1196 \\
-    Design Patterns & 0.3606 & 0.187 \\
-    Introduction to SPM & 0.06331 & $\mathbf{2.397*10^{-16}}$ \\
-    Object Oriented Design & 0.04447 & 0.1891 \\
-    % \textit{All Courses Combined} & 0.6274 & \bf 6.689e-4 \\
+    Labeled LDA, LDA & 6478600 & $2.2*10^{-16}$ \\
+    Labeled LDA, HDP-LDA & 5589900 & $4.322*10^{-9}$ \\
     \bottomrule
     \end{tabular}
-    \caption{Wilcoxon rank sum test generated $p$-values for Labelled LDA against HDP-LDA and LDA. Bold values reject the null hypothesis ($\alpha=0.01$).}
+    \caption{Wilcoxon rank sum test results for Labelled LDA against HDP-LDA and LDA using combined course data.}
     \label{tab:sup-unsup-test}
 \end{table}
 
@@ -555,6 +506,27 @@ We acknowledge \textit{construct validity} threats, namely we used courses from 
 The primary threat to our research validity was fact that only a single author labelling the evaluation dataset.
 Potential bias could have been mitigated with multiple individuals labelling the dataset and reporting inter-rater reliability.
 
+\section{Related Work}
+This paper contributes to research in software engineering traceability and discussion forum topic analysis.
+
+\subsection{Traceability \& Topic Analysis}
+Tracing discussion forum content back to course material has similarities to the problem of tracing source code back the specified requirements.
+Prior work done by \citeauthor{4556122} showed that term frequency-inverse document frequency (TF-IDF) models can encode documents into a rich vector space model, allowing for specification traceability across software artifacts~\cite{4556122}.
+\citeauthor{Tata:2007:EST:1328854.1328855} presented an approach for using TF-IDF models to compare two documents through cosine similarity~\cite{Tata:2007:EST:1328854.1328855}.
+% \citeauthor{895989} outlined a framework for tracing stakeholder requirements through to development processes output, like source code~\cite{895989}.
+\citeauthor{hindle2012relating}'s research showed that topics extracted from LDA on software requirements documentation can be traced to corresponding version control commits~\cite{hindle2012relating}.
+Our research extends the state of the art in software engineering traceability by showing empirical results using labeled topic models for the same task.
+
+
+\subsection{Discussion Forum Analysis}
+The analysis of discussion forums in an educational context is a well-studied domain, spanning insight from sentiment analysis, social network interactions, user reputation, content popularity, and forum usage semantics~\cite{wen2014sentiment,wong2015analysis,coetzee2014should,breslow2013studying,onah2014exploring}.
+
+Of prior work utilizing topic analysis, \citeauthor{ezen2015unsupervised} explored an unsupervised approach for clustering MOOC discussion board activity. Their strategy involved using the $k$-medoids clustering algorithm on bag-of-words inputs derived from discussion forum entities, then applying LDA to extract topics that the researchers could assign instructor meaningful labels to~\cite{ezen2015unsupervised}.
+\citeauthor{atapattu2016topic} used LDA to capture influential topic clusters and isolate discussions requiring intervention on Coursera MOOCs~\cite{atapattu2016topic}.
+\citeauthor{ramesh2014understanding}'s research predicted MOOC student survival using features extracted from seeded topic models on discussion forum posts~\cite{ramesh2014understanding}.
+\citeauthor{Chen:2016:TME:2883851.2883951}'s work performed topic analysis on students' reflection journals, showing exploration of underlying themes and enabling prediction of journal grades~\cite{Chen:2016:TME:2883851.2883951}.
+% \citeauthor{WISE201711}'s research proposed a linguistic natural language model for classifying discussion threads based on the relation to the course content and found reasonable predictive ability~\cite{WISE201711}.
+
 \section{Future Work}
 One limitation of our current approach is the inability to handle off topic discussions.
 Many discussions were either unrelated to the course, or were too general to be mapped appropriately to a single course item.
@@ -567,13 +539,13 @@ Our study focuses entirely on computer science and software engineering courses.
 Another potential replication study could measure if discussion topicality matches course material across courses in Arts and Humanities, Business, Mathematics, Science, and other varying domains.
 
 \section{Conclusion}
-We performed an evaluation of using multiple variants of LDA topic models to trace discussion forum posts back to its corresponding course material in seven MOOCs.
-We investigated the traceability accuracy and found that although topic models could not surpass the TF-IDF model baseline, our topic models were significantly better than random chance.
+We performed an evaluation of using multiple variants of LDA topic models to trace discussion forum posts back to its corresponding course material in five MOOCs.
+We investigated the traceability accuracy and found that although topic models could not surpass the TF-IDF model baseline, our trained topic models were significantly better than random chance.
 
 We have provided results demonstrating that topic models can be used as a feature extraction step for unstructured text traceability.
 These topic models do not require any additional data that does not already exist in MOOCs.
 Unlike TF-IDF, they are fast and generate constant size feature vectors for similarity comparisons.
-We hope that our research will benefit MOOC stakeholders and advance other domains dealing with traceability.
+Our research can benefit MOOC stakeholders and advance other domains dealing with traceability.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{references}
