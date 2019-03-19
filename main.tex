@@ -108,10 +108,12 @@
 % The abstract is a short summary of the work to be presented in the article.
 \begin{abstract}
 Massive Open Online Courses are educational programs that are open and accessible to a large number of people through the internet.
-To facilitating learning, MOOC discussion forums exist where students and instructors communicate questions, answers, and thoughts related to the course.
+To facilitate learning, MOOC discussion forums exist where students and instructors communicate questions, answers, and thoughts related to the course.
 
 The primary objective of this paper is to investigate tracing discussion forum posts back to course lecture videos and readings using topic analysis. We utilize both unsupervised and supervised variants of Latent Dirichlet Allocation (LDA) to extract topics from course material and classify forum posts.
-We validate our approach on posts bootstrapped from five University of Alberta Coursera courses and determine that topic models can accurately map student discussions back to the underlying lecture or reading. Labeled LDA outperforms unsupervised Hierarchical Dirichlet Process LDA and base LDA for our traceability task.
+We validate our approach on posts bootstrapped from five
+% University of Alberta
+Coursera courses and determine that topic models can accurately map student discussions back to the underlying lecture or reading. Labeled LDA outperforms unsupervised Hierarchical Dirichlet Process LDA and base LDA for our traceability task.
 
 \end{abstract}
 
@@ -163,7 +165,15 @@ Unfortunately, basic visualizations showing discussion board summary statistics 
 % AH: You know if you'd plot topic association over time of labelled LDA that might be
 %     useful as a summary and contribution
 % AH: worse, you claim to have this high level contribution but we don't see evidence of it
-This paper presents a methodology to trace discussion forum activity back to the underlying course material.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\columnwidth]{fig/sample_classification}
+    \caption{Sample discussion post from "Agile Planning for Software Products" classified by our topic models. TF-IDF and Labeled-LDA models matched researcher given label.}
+    \label{fig:sample_classification}
+\end{figure}
+
+This paper presents a methodology to trace discussion forum activity back to the underlying course material, as demonstrated in Figure~\ref{fig:sample_classification}.
 One motivation is to show instructors potential areas of misunderstanding with respect to a given lecture video or reading.
 Instructors could view discussions grouped by lecture and ordered by post count.
 This would allow instructors to more quickly respond to multiple students struggling with the same issue.
@@ -226,7 +236,9 @@ The hierarchical structure of the course was obtained through privileged access 
 The raw document information, such as lecture video subtitles and readings, was mined through polling the Coursera On-Demand API endpoint as an authenticated user enrolled in all of the relevant courses.
 Figure \ref{fig:data_model} shows the scope of our data model for our research.
 
-We performed supervised and unsupervised topic extraction on five University of Alberta MOOCs run on the Coursera platform, described in Table~\ref{tab:uofa-courses}.
+We performed supervised and unsupervised topic extraction on five
+% University of Alberta
+MOOCs run on the Coursera platform, described in Table~\ref{tab:uofa-courses}.
 All courses studied were related to Computer Science and Software Engineering.
 After pre-processing the course material, we obtained 190 documents, with 8,805 unique tokens.
 The average document contained 158 tokens.
