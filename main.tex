@@ -189,7 +189,7 @@ A linear combination of all $n$ discovered word distributions can then be mapped
 Topics themselves can be thought of as a ranked list of words, ordered from high topic relevance to low topic relevance.
 
 We utilize four different variants of Latent Dirichlet Allocation (LDA) to extract topic-document distribution feature vectors from discussion forum content and course material~\cite{blei2003latent}.
-Term Frequency Inverse Document Frequency (TF-IDF), a normalization approach extracting number of times a word appears in the document divided by the total nunmber of words in the document, is used as the baseline model for forum content feature extraction~\cite{SALTON1988513}.
+Term Frequency Inverse Document Frequency (TF-IDF), a normalization approach extracting number of times a word appears in the document divided by the total number of words in the document, is used as the baseline model for forum content feature extraction~\cite{SALTON1988513}.
 
 We compare the effectiveness of unsupervised LDA approaches with labeled extensions of LDA for discussion traceability.
 For labels, we utilize the defined course module, lesson, and item headings already associated with each course document.
@@ -216,16 +216,16 @@ Finally, we present our results and analysis.
 
 \subsection{Data Mining Coursera}
 Coursera is an online learning platform that allows universities and other organizations to offer MOOCs, specializations, and degrees.
-A MOOC can be versioned by \texttt{branches} or be composed of a single \texttt{branch}.
-Figure~\ref{fig:data_model} shows the structure of course material within a \texttt{branch}.
-A \texttt{branch} is composed of \texttt{modules}, which are groups of \texttt{lessons} intended to encompass a week's worth of material.
-A \texttt{lesson} is a more focused group containing \texttt{items} on a specific subject matter.
-An \texttt{item} is the smallest document for Coursera MOOCs. \texttt{Items} are used to encapsulate specific lecture videos, readings, quizzes, or assignments.
+A MOOC can be versioned by \textit{branches} or be composed of a single \textit{branch}.
+Figure~\ref{fig:data_model} shows the structure of course material within a \textit{branch}.
+A \textit{branch} is composed of \textit{modules}, which are groups of \textit{lessons} intended to encompass a week's worth of material.
+A \textit{lesson} is a more focused group containing \textit{items} on a specific subject matter.
+An \textit{item} is the smallest document for Coursera MOOCs. \textit{Items} are used to encapsulate specific lecture videos, readings, quizzes, or assignments.
 
 Multiple forums may exist for a single course.
 The forums are curated by the instructional staff and exist to tailor discussion to a general domain.
 Common course forum titles include "Introductions", "General Course Discussion", and "Technical Issues".
-When interacting with the forums, students are limited to either posting \texttt{Questions} or \texttt{Answers}.
+When interacting with the forums, students are limited to either posting \textit{Questions} or \textit{Answers}.
 Questions are top level discussion entities that exist immediately underneath a forum, usually seeking subject matter clarification and help.
 Answers are replies to Questions and typically contain hints and guidance for the related question.
 In our study, we did not distinguish between the forums a user posted in or the type of discussion.
@@ -244,8 +244,8 @@ We performed supervised and unsupervised topic extraction on five
 % University of Alberta
 MOOCs run on the Coursera platform, described in Table~\ref{tab:uofa-courses}.
 All courses studied were related to Computer Science and Software Engineering.
-After pre-processing the course material, we obtained 190 documents, with 8,805 unique tokens.
-The average document contained 158 tokens.
+After pre-processing the course material, we obtained 190 documents, with 8,805 unique stemmed word stubs.
+The average document contained 158 word stubs.
 An example of the document structure and label hierarchy can be found in Figure~\ref{fig:sample_doc}.
 
 \begin{table}
@@ -284,11 +284,12 @@ An example of the document structure and label hierarchy can be found in Figure~
 \subsection{Topic Analysis Approaches}
 Topics were extracted from the course content material using unsupervised and supervised LDA.
 New models were trained for each course.
+
 We used the \texttt{gensim@3.7.1} implementation of LDA, Hierarchical Dirichlet Process LDA (HDP-LDA) and Author-Topic model~\cite{rehurek_lrec}.
 To form our unsupervised set of topics, we used both LDA and HDP-LDA.
 All LDA parameters were set as the library provided defaults ($\text{num\_topics}=100$, $\alpha=0.01$, $\beta=0.001$).
 HDP-LDA addresses one shortcoming of traditional LDA by using a Dirichlet process to capture the number of topics, rather than defining the number of topics a priori~\cite{wang2011online}.
-We ran HDP-LDA with the default configuration provided by the library ($\kappa=1$, $\tau=64$, $K=15$, $T=150$, $\alpha=1$, $\gamma=1$, $\eta=0.01$).
+We ran HDP-LDA with the default configuration provided by the library ($\kappa=1$, $\tau=64$, $K=15$, $T=150$, $\alpha=0.01$, $\gamma=1$, $\eta=0.01$).
 
 The Author-Topic model, an extension of base LDA, was introduced by \citeauthor{rosen2004author} to correlate documents with authorship information to provide more details on the subject knowledge of the given author~\cite{rosen2004author}.
 The Author component of the Author-Topic model is classically represented by labeling an existing corpus of documents with the author(s) of the document.
@@ -300,11 +301,13 @@ Additional topic analysis using Labeled LDA was run.
 Unlike Author-Topic models, Labeled LDA outputs topics constrained to the labels defined in the corpus~\cite{ramage2009labeled}.
 Classical applications of Labeled LDA are analyzing tagged blog entries, where a given blog may have multiple associated tags.
 We extend an existing implementation of Labeled LDA found on GitHub, with slight modification for topic inference without training~\footnote{Labeled LDA in Python.
-    %\url{https://github.com/fann1993814/llda}
+    \url{https://github.com/fann1993814/llda}
     %\url{https://github.com/shuyo/iir}
-    URL DOUBLE BLIND HIDDEN}.
+    %URL DOUBLE BLIND HIDDEN
+    }.
 Our parameter choices for Labeled LDA are $\alpha=0.01$, $\text{beta}=0.001$, with 50 iterations.
-The differences between the four studied models are defined in Table~\ref{tab:topic_models}. We use the \texttt{module}, \texttt{lesson}, and \texttt{item} names as labels for our Author-Topic and Labeled LDA approaches.
+The differences between the four studied models are defined in Table~\ref{tab:topic_models}.
+We use the \texttt{module}, \texttt{lesson}, and \texttt{item} names as labels for our Author-Topic and Labeled LDA approaches.
 % AH: I don't understand where the labels are from. What are the labels?
 
 \begin{table}
@@ -342,7 +345,10 @@ These discussion questions and answers were related to pre-existing topics extra
 If a discussion post has similar topics to a given lecture, we want to suggest that lecture as a likely candidate for the post.
 Specifically, the document-topic vector of the discussion post is compared with the document-topic vector of the course item.
 To determine topic similarity, we used cosine distance as defined in Equation~\ref{eq:cos_distance}.
-The cosine distance function returns a floating value between 0 and 1. As the cosine distance approaches 1, the two elements are more distinct. The two elements are more similar as the cosine distance approaches 0.
+The cosine distance function returns a floating value between 0 and 1.
+As the cosine distance approaches 1, the two elements are more distinct.
+The two elements are more similar as the cosine distance approaches 0.
+We choose cosine distance as our measurement due to its success in prior literature in ranking topically-similar documents~\cite{6062077}.
 
 % you're using cosine distance as a score for the best topic
 % or the best document? What's the point?
@@ -520,14 +526,14 @@ Additionally, we did not train a comprehensive model on the entire set of course
 
 \section{Threats to Validity}
 We acknowledge \textit{construct validity} threats, namely we used courses from a single institution that discussed computer science and software engineering material. We mitigated this threat by using multiple courses rather than one single course.
-The primary threat to our research validity was fact that only a single author labelling the evaluation dataset.
+The primary threat to our research validity was the fact that only a single author labeled the evaluation dataset, therefore evaluation relied on a single author's judgment.
 Potential bias could have been mitigated with multiple individuals labelling the dataset and reporting inter-rater reliability.
 
 \section{Related Work}
 This paper contributes to research in software engineering traceability and discussion forum topic analysis.
 
 \subsection{Traceability \& Topic Analysis}
-Tracing discussion forum content back to course material has similarities to the problem of tracing source code back the specified requirements.
+Tracing discussion forum content back to course material has similarities to the problem of tracing source code back to the specified requirements.
 Prior work done by \citeauthor{4556122} showed that term frequency-inverse document frequency (TF-IDF) models can encode documents into a rich vector space model, allowing for specification traceability across software artifacts~\cite{4556122}.
 \citeauthor{Tata:2007:EST:1328854.1328855} presented an approach for using TF-IDF models to compare two documents through cosine similarity~\cite{Tata:2007:EST:1328854.1328855}.
 % \citeauthor{895989} outlined a framework for tracing stakeholder requirements through to development processes output, like source code~\cite{895989}.
