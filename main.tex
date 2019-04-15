@@ -1,7 +1,8 @@
 %%%% Proceedings format for most of ACM conferences (with the exceptions listed below) and all ICPS volumes.
 
 % \documentclass[sigconf]{acmart}
-\documentclass[sigconf, anonymous]{acmart}
+% \documentclass[sigconf, anonymous]{acmart}
+\documentclass[sigconf, nonacm=true]{acmart}
 \usepackage{tabularx}
 \usepackage{multirow}
 \usepackage{hhline}
@@ -110,10 +111,11 @@
 Massive Open Online Courses are educational programs that are open and accessible to a large number of people through the internet.
 To facilitate learning, MOOC discussion forums exist where students and instructors communicate questions, answers, and thoughts related to the course.
 
-The primary objective of this paper is to investigate tracing discussion forum posts back to course lecture videos and readings using topic analysis. We utilize both unsupervised and supervised variants of Latent Dirichlet Allocation (LDA) to extract topics from course material and classify forum posts.
-We validate our approach on posts bootstrapped from five
-% University of Alberta
-Coursera courses and determine that topic models can accurately map student discussions back to the underlying lecture or reading. Labeled LDA outperforms unsupervised Hierarchical Dirichlet Process LDA and base LDA for our traceability task.
+The primary objective of this paper is to investigate tracing discussion forum posts back to course lecture videos and readings using topic analysis.
+We utilize both unsupervised and supervised variants of Latent Dirichlet Allocation (LDA) to extract topics from course material and classify forum posts.
+We validate our approach on posts bootstrapped from five Coursera courses and determine that topic models can be used to map student discussion posts back to the underlying course lecture or reading.
+Labeled LDA outperforms unsupervised Hierarchical Dirichlet Process LDA and base LDA for our traceability task.
+This research is useful as it provides an automated approach for clustering student discussions by course material, enabling instructors to quickly evaluate student misunderstanding of content and clarify materials accordingly.
 
 \end{abstract}
 
@@ -168,7 +170,7 @@ Unfortunately, basic visualizations showing discussion board summary statistics 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/sample_classification}
+    \includegraphics[width=\columnwidth]{figures/sample_classification}
     \caption{Sample discussion post from "Agile Planning for Software Products" classified by our topic models. TF-IDF and Labeled-LDA models matched researcher given label.}
     \label{fig:sample_classification}
 \end{figure}
@@ -186,8 +188,10 @@ LDA then attempts to find a set of $n$ topics that describe the input documents.
 A linear combination of all $n$ discovered word distributions can then be mapped to each input document.
 Topics themselves can be thought of as a ranked list of words, ordered from high topic relevance to low topic relevance.
 
-We utilize four different variants of Latent Dirichlet Allocation (LDA) to extract topics from discussion forum content and course material~\cite{blei2003latent}.
-We compare the unsupervised LDA with labeled extensions of LDA.
+We utilize four different variants of Latent Dirichlet Allocation (LDA) to extract topic-document distribution feature vectors from discussion forum content and course material~\cite{blei2003latent}.
+Term Frequency Inverse Document Frequency (TF-IDF), a normalization approach extracting number of times a word appears in the document divided by the total nunmber of words in the document, is used as the baseline model for forum content feature extraction~\cite{SALTON1988513}.
+
+We compare the effectiveness of unsupervised LDA approaches with labeled extensions of LDA for discussion traceability.
 For labels, we utilize the defined course module, lesson, and item headings already associated with each course document.
 Author~Topic~models train on text with associated authors, enabling association of extracted topics to the individuals that wrote the document~\cite{rosen2004author}.
 Labeled~LDA trains on text with a set of tags, which enables inferring word association to the defined tags that exist within the input corpus~\cite{ramage2009labeled}.
@@ -265,14 +269,14 @@ An example of the document structure and label hierarchy can be found in Figure~
 
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/data_model}
+    \includegraphics[width=\columnwidth]{figures/data_model}
     \caption{Course material consists of modules, lessons, and items. Topics infer discussion board activity. Topics have a many-to-many relationship to course material.}
     \label{fig:data_model}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/sample_doc}
+    \includegraphics[width=\columnwidth]{figures/sample_doc}
     \caption{Two documents (D) from "Agile Planning for Software Products" with corresponding labels (M, L, I).}
     \label{fig:sample_doc}
 \end{figure}
@@ -307,15 +311,16 @@ The differences between the four studied models are defined in Table~\ref{tab:to
     \centering
     \begin{tabularx}{\columnwidth}{@{}llll@{}}
     \toprule
-    Topic Model & Labels & Topic Characteristic & Num. Topics \\
+    Model & Labels & Feature Characteristic & Vec. Size \\
     \midrule
-    LDA & \texttt{False} & bounded, latent & set 100 \\
-    HDP-LDA & \texttt{False} & unbounded, latent  & capped 150 \\
-    Author-Topic & \texttt{True} & distributed over labels & set 100 \\
-    Labeled LDA & \texttt{True} & restricted to labels & Num. labels \\
+    TF-IDF & \texttt{False} & \# unique words/all words & \# words \\
+    LDA & \texttt{False} & topics: bounded, latent & set 100 \\
+    HDP-LDA & \texttt{False} & topics: unbounded, latent  & cap 150 \\
+    Author-Topic & \texttt{True} & topics: distributed over labels & set 100 \\
+    Labeled LDA & \texttt{True} & topics: restricted to labels & \# labels \\
     \bottomrule
     \end{tabularx}
-    \caption{Comparison of the four different topic analysis models used in our study.}
+    \caption{Comparison of the baseline and four different topic analysis models used in our study.}
     \label{tab:topic_models}
 \end{table}
 
@@ -400,7 +405,7 @@ Given common words used by students that did not appear in the course material, 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\columnwidth]{fig/agile-planning-bootstrap-cropped}
+    \includegraphics[width=\columnwidth]{figures/agile-planning-bootstrap-cropped}
     \caption{Reciprocal rank violin plot for "Agile Planning for Software Products". Horizontal line indicates model MRR.}
     \label{fig:agile-planning-plot}
 \end{figure}
@@ -536,7 +541,7 @@ The analysis of discussion forums in an educational context is a well-studied do
 Of prior work utilizing topic analysis, \citeauthor{ezen2015unsupervised} explored an unsupervised approach for clustering MOOC discussion board activity. Their strategy involved using the $k$-medoids clustering algorithm on bag-of-words inputs derived from discussion forum entities, then applying LDA to extract topics that the researchers could assign instructor meaningful labels to~\cite{ezen2015unsupervised}.
 \citeauthor{atapattu2016topic} used LDA to capture influential topic clusters and isolate discussions requiring intervention on Coursera MOOCs~\cite{atapattu2016topic}.
 \citeauthor{ramesh2014understanding}'s research predicted MOOC student survival using features extracted from seeded topic models on discussion forum posts~\cite{ramesh2014understanding}.
-\citeauthor{Chen:2016:TME:2883851.2883951}'s work performed topic analysis on students' reflection journals, showing exploration of underlying themes and enabling prediction of journal grades~\cite{Chen:2016:TME:2883851.2883951}.
+Topic analysis was performed by \citeauthor{Chen:2016:TME:2883851.2883951} on students' reflection journals, showing exploration of underlying themes and enabling prediction of journal grades~\cite{Chen:2016:TME:2883851.2883951}.
 % \citeauthor{WISE201711}'s research proposed a linguistic natural language model for classifying discussion threads based on the relation to the course content and found reasonable predictive ability~\cite{WISE201711}.
 
 \section{Future Work}
