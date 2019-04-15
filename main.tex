@@ -311,12 +311,12 @@ The differences between the four studied models are defined in Table~\ref{tab:to
     \centering
     \begin{tabularx}{\columnwidth}{@{}llll@{}}
     \toprule
-    Model & Labels & Feature Characteristic & Vec. Size \\
+    Model & Labels & Feature Characteristic & Vector Size \\
     \midrule
     TF-IDF & \texttt{False} & \# unique words/all words & \# words \\
     LDA & \texttt{False} & topics: bounded, latent & set 100 \\
     HDP-LDA & \texttt{False} & topics: unbounded, latent  & cap 150 \\
-    Author-Topic & \texttt{True} & topics: distributed over labels & set 100 \\
+    Author-Topic & \texttt{True} & topics: label distributed & set 100 \\
     Labeled LDA & \texttt{True} & topics: restricted to labels & \# labels \\
     \bottomrule
     \end{tabularx}
